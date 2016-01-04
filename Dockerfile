@@ -25,7 +25,6 @@ ADD . /usr/local/src/phoenix/app
 
 # Setup phoenix app
 WORKDIR /usr/local/src/phoenix/app
-RUN npm install
 RUN npm install -g brunch
 
 # Add exrm dependency
@@ -35,14 +34,14 @@ RUN sed -i "s/\({:cowboy,.*}\)]/\1, {:exrm, \"~> 0.14.16\"}]/g" mix.exs
 RUN sed -i "s/^config\(.*\).Endpoint,/config \1.Endpoint, server: true,/g" config/prod.exs
 
 # Compile phoenix(FOR dev)
-#RUN yes | mix local.hex && yes | mix local.rebar && mix do deps.get, compile
+RUN yes | mix local.hex && yes | mix local.rebar && mix do deps.get, compile
 # Compile phoenix(FOR prod)
-RUN yes | mix local.hex && yes | mix local.rebar && mix do deps.get && brunch build && mix phoenix.digest && MIX_ENV=prod mix release
+# RUN yes | mix local.hex && yes | mix local.rebar && mix do deps.get && brunch build && mix phoenix.digest && MIX_ENV=prod mix release
 ########## PHOENIX ##########
 
 ########## ON BOOT ##########
 # Run Phoenix on Cowboy server(FOR dev)
-#CMD ["/bin/bash", "-c", "mix phoenix.server"]
+CMD ["/bin/bash", "-c", "mix phoenix.server"]
 # Run Phoenix on Cowboy server(FOR prod)
-CMD ["/bin/bash", "-c", "PORT=${PHOENIX_APP_PORT} rel/${PHOENIX_APP_NAME}/bin/${PHOENIX_APP_NAME} foreground"]
+# CMD ["/bin/bash", "-c", "PORT=${PHOENIX_APP_PORT} rel/${PHOENIX_APP_NAME}/bin/${PHOENIX_APP_NAME} foreground"]
 ########## ON BOOT ##########
